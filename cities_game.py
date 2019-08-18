@@ -40,7 +40,7 @@ class CitiesGame:
 
             # Проверяем, что Бот смог найти следующее слово
             if not selected_city:
-                game_stats[self.user_id]['used_cities'] = []
+                self.reset()
                 self.current_users_activity[self.user_id] = 'CHAT'
                 return 'Поздравляю с победой! Я больше не знаю городов..'
 
@@ -48,16 +48,21 @@ class CitiesGame:
             game_stats[self.user_id]['prev_letter'] = self.get_accepted_last_char(selected_city)
             return f'{selected_city.title()}. Тебе на "{game_stats[self.user_id]["prev_letter"]}"'
 
-    def choose_city(self, city_name):
+    def choose_city(self, city_name=None, is_hint=False):
         """
         Метод для выбора следующего города на основе текущего города
         """
         if game_stats[self.user_id]['status'] == 'start':
-            return random.choice(cities[chr(random.randint(1040, 1071))])
+            return random.choice(cities[chr(random.randint(1040, 1045))])
 
-        game_stats[self.user_id]['used_cities'].append(city_name)
+        if not is_hint:
+            game_stats[self.user_id]['used_cities'].append(city_name)
 
-        last_char = self.get_accepted_last_char(city_name)
+        if is_hint:
+            last_char = game_stats[self.user_id]['prev_letter']
+        else:
+            last_char = self.get_accepted_last_char(city_name)
+
         if last_char in cities:
             cities_variants = [city for city in cities[last_char] if city not in game_stats[self.user_id]['used_cities']]
             if len(cities_variants) > 0:
@@ -74,6 +79,10 @@ class CitiesGame:
             city_name = city_name[:-1]
 
         return city_name[-1]
+
+    def reset(self):
+        game_stats.pop(self.user_id)
+
 
 
 game_stats, cities = dict(), dict()
