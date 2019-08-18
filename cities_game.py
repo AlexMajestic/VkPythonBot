@@ -1,5 +1,6 @@
 import random
-
+import inspect
+import os.path
 
 class CitiesGame:
     def __init__(self, user_id, current_users_activity):
@@ -84,9 +85,10 @@ class CitiesGame:
         game_stats.pop(self.user_id)
 
 
-
 game_stats, cities = dict(), dict()
-with open('resources/cities_game/cities.txt', 'r', encoding='utf8') as cities_file:
+filename = inspect.getframeinfo(inspect.currentframe()).filename
+path = os.path.dirname(os.path.abspath(filename))
+with open(path + '/resources/cities_game/cities.txt', 'r', encoding='utf8') as cities_file:
     for city in cities_file:
         if city[0] not in cities:
             cities[city[0]] = []
